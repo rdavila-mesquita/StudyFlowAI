@@ -28,12 +28,6 @@ Assistente inteligente de planejamento de estudos. Informe a disciplina, o conte
 - Sonner (toasts)
 - Recharts (analytics)
 
-**Backend** *(repositório separado)*
-- FastAPI
-- LangGraph
-- SQLite + SQLAlchemy
-- Claude (Anthropic)
-
 ---
 
 ## Pré-requisitos
