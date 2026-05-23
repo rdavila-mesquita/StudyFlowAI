@@ -1,73 +1,103 @@
-# React + TypeScript + Vite
+# StudyFlowAI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Assistente inteligente de planejamento de estudos. Informe a disciplina, o conteúdo, seu nível e a data da prova — a IA monta um plano personalizado com tópicos, dicas, objetivos de aprendizagem e um cronograma de revisão espaçada.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+- **Geração de plano com IA** — plano estruturado em tópicos progressivos, com dificuldade calibrada ao seu nível
+- **Cronograma automático** — distribui os tópicos nos dias disponíveis e agenda revisões em D+1, D+7 e D+14
+- **Calendário interativo** — visualize seus dias de estudo e revisão no calendário
+- **Progresso por tópico** — marque tópicos como concluídos e acompanhe seu avanço com barra de progresso
+- **Simulado** — ao concluir todos os tópicos, faça um simulado com questões reais do ENEM
+- **Busca de planos salvos** — todos os planos são salvos e acessíveis pelo link `/plans/:id`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Frontend**
+- React 19 + TypeScript
+- Vite
+- Tailwind CSS v4
+- shadcn/ui + Radix UI
+- TanStack Query
+- React Router DOM v7
+- i18next (pt/en)
+- Sonner (toasts)
+- Recharts (analytics)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Backend** *(repositório separado)*
+- FastAPI
+- LangGraph
+- SQLite + SQLAlchemy
+- Claude (Anthropic)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Pré-requisitos
+
+- Node.js 18+
+- Backend StudyFlowAI rodando em `http://localhost:8000`
+
+---
+
+## Instalação
+
+```bash
+# instale as dependências
+npm install
+
+---
+
+## Rodando
+
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Acesse `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Rotas
+
+| Rota | Descrição |
+|---|---|
+| `/` | Formulário de geração do plano |
+| `/plan` | Plano recém-gerado |
+| `/plans/:id` | Plano salvo por ID |
+
+---
+
+## Estrutura
+
 ```
+src/
+├── api/          # chamadas ao backend
+├── components/   # componentes reutilizáveis
+├── hooks/        # usePlan, usePlanById, useAllPlans
+├── locales/      # traduções pt/en
+├── pages/        # Home, Plan, Analytics
+├── service/      # instância do axios
+├── simulator/    # integração com api.enem.dev
+└── types/        # interfaces TypeScript
+```
+
+---
+
+## Scripts
+
+```bash
+npm run dev       # desenvolvimento
+npm run build     # build de produção
+npm run preview   # preview do build
+npm run lint      # linting
+```
+
+---
+
+## Documentação
+
+Consulte o [SETUP_GUIDE.md](./SETUP_GUIDE.md) para instruções detalhadas de configuração, variáveis de ambiente, endpoints do backend e solução de problemas comuns.
