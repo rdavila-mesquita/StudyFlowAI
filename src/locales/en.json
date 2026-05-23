@@ -1,0 +1,23 @@
+{
+  "plan": {
+    "plan_title": "Plan Title",
+    "summary": "Summary",
+    "total_estimated_hours": "Total Estimated Hours",
+    "personalized_message": "Message",
+    "topics": {
+      "order": "Order",
+      "title": "Topic",
+      "description": "Description",
+      "prerequisites": "Prerequisites",
+      "difficulty": "Difficulty",
+      "estimated_hours": "Estimated Hours",
+      "learning_objectives": "Learning Objectives",
+      "study_tips": "Study Tips",
+      "completion_criteria": "Completion Criteria",
+      "suggested_resource": {
+        "type": "Resource Type",
+        "description": "Resource Description"
+      }
+    }
+  }
+}

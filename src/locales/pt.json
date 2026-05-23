@@ -1,0 +1,23 @@
+{
+  "plan": {
+    "plan_title": "Título do Plano",
+    "summary": "Resumo",
+    "total_estimated_hours": "Carga Total Estimada",
+    "personalized_message": "Mensagem",
+    "topics": {
+      "order": "Ordem",
+      "title": "Tópico",
+      "description": "Descrição",
+      "prerequisites": "Pré-requisitos",
+      "difficulty": "Dificuldade",
+      "estimated_hours": "Horas Estimadas",
+      "learning_objectives": "Objetivos de Aprendizagem",
+      "study_tips": "Dicas de Estudo",
+      "completion_criteria": "Critério de Conclusão",
+      "suggested_resource": {
+        "type": "Tipo de Recurso",
+        "description": "Descrição do Recurso"
+      }
+    }
+  }
+}
