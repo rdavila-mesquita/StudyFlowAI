@@ -1,31 +1,19 @@
 import { api } from "../service/api";
 import type { GeneratePlanRequest, GeneratePlanResponse } from "../types/study";
 
-const BASE_URL = "http://localhost:8000";
-
 export async function generatePlan(
   payload: GeneratePlanRequest
 ): Promise<GeneratePlanResponse> {
-  const res = await fetch(`${BASE_URL}/generate-plan`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error?.detail ?? "Failed to generate plan");
-  }
-
-  return res.json();
+  const response = await api.post<GeneratePlanResponse>("/api/planos", payload);
+  return response.data;
 }
 
 export async function fetchPlanById(id: number): Promise<GeneratePlanResponse> {
-  const response = await api.get<GeneratePlanResponse>(`/plans/${id}`);
+  const response = await api.get<GeneratePlanResponse>(`/api/planos/${id}`);
   return response.data;
 }
 
 export async function fetchAllPlans(): Promise<GeneratePlanResponse[]> {
-  const response = await api.get<GeneratePlanResponse[]>("/plans");
+  const response = await api.get<GeneratePlanResponse[]>("/api/planos");
   return response.data;
 }

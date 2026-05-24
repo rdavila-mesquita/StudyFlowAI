@@ -2,6 +2,7 @@ import "./i18n";
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PlanPage } from "./pages/Plan/PlanPage";
+import SimulatorPage from "./simulator/simulatorPage";
 import App from "./App";
 import './index.css'
 
@@ -20,8 +21,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/plan" element={<PlanPage />} />
-          <Route path="/plans/:id" element={<PlanPage />} />
+          <Route path="/api/planos" element={<PlanPage />} />
+          <Route path="/api/planos/:id" element={<PlanPage />} />
+          <Route path="/api/simulados" element={<SimulatorPage />} />
+          <Route path="/api/simulados/:id" element={<SimulatorPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster richColors />

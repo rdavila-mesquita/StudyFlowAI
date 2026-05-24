@@ -3,6 +3,8 @@ import { type GeneratePlanResponse } from "../../types/study";
 import { usePlanById } from "../../hooks/usePlanById";
 import "./PlanPage.css";
 import { ScheduleOverview } from "../../components/ui/scheduleOverview";
+import { Button } from "../../components/ui/button";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 
 export function PlanPage() {
@@ -34,6 +36,11 @@ export function PlanPage() {
 
         <div className="flex flex-col gap-6 mt-6">
           <ScheduleOverview studyPlan={plan.study_plan} />
+        </div>
+
+        <div className="gap-6 mt-8">
+          <h2>Faça um simulado e teste seus conhecimentos</h2>
+          <Button variant="ghost" onClick={() => navigate("/api/simulados")}>Fazer simulado <SquareArrowOutUpRight /> </Button>
         </div>
       </div>
     </div>

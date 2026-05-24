@@ -38,7 +38,7 @@ function Home() {
 
     try {
       setLoading(true);
-      const response = await api.post<GeneratePlanResponse>("/generate-plan", {
+      const response = await api.post<GeneratePlanResponse>("/api/planos", {
         discipline,
         subject,
         level,
@@ -46,7 +46,7 @@ function Home() {
         hours_per_day: Number(hoursPerDay),
       });
       
-      navigate(`/plans/${response.data}`, {state: {plan: response.data}})
+      navigate(`api/planos/${response.data.id}`, { state: { plan: response.data } })
     } catch {
       toast.error("Erro ao gerar o plano. Tente novamente.");
     } finally {

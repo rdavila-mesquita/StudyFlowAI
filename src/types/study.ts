@@ -45,6 +45,7 @@ export interface GeneratePlanRequest {
 }
 
 export interface GeneratePlanResponse {
+  id: number;
   plan_summary: PlanSummary;
   topics: Topic[];
   study_plan: ScheduleEntry[];
