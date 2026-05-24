@@ -223,7 +223,7 @@ export function ScheduleOverview({ studyPlan }: { studyPlan: ScheduleEntry[] }) 
             <button
               type="button"
               className="text-sm"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/api/simulados")}
             >
               Fazer Outro Plano
             </button>
@@ -244,7 +244,7 @@ export function ScheduleOverview({ studyPlan }: { studyPlan: ScheduleEntry[] }) 
 
       <section>
         <h3 className="text-sm text-muted-foreground mb-3">Revisões</h3>
-        <div className="flex flex-row gap-4 overflow-x-auto pb-3">
+        <div className="flex flex-row gap-4 overflow-x-auto pb-7">
           {reviewEntries.map((entry, i) => (
             <div key={i} className="shrink-0">
               <ReviewCard entry={entry} />

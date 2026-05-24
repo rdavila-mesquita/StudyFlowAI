@@ -1,8 +1,8 @@
 import Simulator from "../components/ui/simulator"
 
-function simulatorPage() {
+function SimulatorPage() {
   return (
-    <div>
+    <div className="text-center p-5 gap-4">
         <h2 className="simulated-title">Simulado</h2>
         <p>Faça um simulado para testar seus conhecimentos.</p>
         <Simulator />
@@ -10,4 +10,4 @@ function simulatorPage() {
   )
 }
 
-export default simulatorPage
+export default SimulatorPage
