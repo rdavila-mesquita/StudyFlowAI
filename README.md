@@ -11,7 +11,7 @@ Assistente inteligente de planejamento de estudos. Informe a disciplina, o conte
 - **Calendário interativo** — visualize seus dias de estudo e revisão no calendário
 - **Progresso por tópico** — marque tópicos como concluídos e acompanhe seu avanço com barra de progresso
 - **Simulado** — ao concluir todos os tópicos, faça um simulado com questões reais do ENEM
-- **Busca de planos salvos** — todos os planos são salvos e acessíveis pelo link `/plans/:id`
+- **Busca de planos salvos** — todos os planos são salvos e acessíveis pelo link `api/planos/:id`
 
 ---
 
@@ -60,8 +60,8 @@ Acesse `http://localhost:5173`.
 | Rota | Descrição |
 |---|---|
 | `/` | Formulário de geração do plano |
-| `/plan` | Plano recém-gerado |
-| `/plans/:id` | Plano salvo por ID |
+| `/api/planos` | Plano recém-gerado |
+| `/api/planos/:id` | Plano salvo por ID |
 
 ---
 
