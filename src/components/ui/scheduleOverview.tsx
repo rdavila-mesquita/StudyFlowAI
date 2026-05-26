@@ -1,5 +1,5 @@
-import { BookOpen, Calendar, Clock, RefreshCcw, Trophy } from "lucide-react";
-import type { ScheduleEntry } from "../../types/study";
+import { BookOpen, Calendar, Clock, RefreshCcw } from "lucide-react";
+import type { ScheduleEntry, Topic } from "../../types/study";
 import { Badge } from "./badge";
 import { Card } from "./card";
 import { useState } from "react";
@@ -7,7 +7,6 @@ import { Field, FieldLabel } from "./field";
 import { Label } from "./label";
 import { Input } from "./input";
 import { Checkbox } from "./checkbox";
-import { useNavigate } from "react-router-dom";
 
 const RESOURCE_ICON: Record<string, string> = {
   video: "▶",
@@ -24,15 +23,15 @@ function formatDate(iso: string) {
 
 type StudyCardProps = {
   entry: ScheduleEntry;
+  topic: Topic | null;
   onComplete: () => void;
   onUncomplete: () => void;
 };
 
-function StudyCard({ entry, onComplete, onUncomplete }: StudyCardProps) {
+function StudyCard({ entry, topic, onComplete, onUncomplete }: StudyCardProps) {
   const [checked, setChecked] = useState(false);
   const [showReason, setShowReason] = useState(false);
   const [reason, setReason] = useState("");
-
 
   function handleCheck(value: boolean) {
     setChecked(value);
@@ -45,7 +44,7 @@ function StudyCard({ entry, onComplete, onUncomplete }: StudyCardProps) {
   }
 
   return (
-    <Card className="max-w-96 rounded-lg border p-4 shadow-sm">
+    <Card className="max-w-96 rounded-lg border p-4 shadow-sm gap-4">
       <div className="flex justify-between">
         <Badge variant="secondary">
           <Calendar data-icon="inline-start" />{formatDate(entry.date)}
@@ -73,17 +72,13 @@ function StudyCard({ entry, onComplete, onUncomplete }: StudyCardProps) {
         </>
       )}
 
-      {entry.study_tips && entry.study_tips.length > 0 && (
+      {topic?.suggested_resource && (
         <>
           <hr className="divider" />
           <p className="section-label">Dicas</p>
-          <div className="tag-list">
-            {entry.study_tips.map((tip, i) => (
-              <span key={i} className="tag">
-                {RESOURCE_ICON["exercício"]} {tip}
-              </span>
-            ))}
-          </div>
+          <span className="tag">
+            {RESOURCE_ICON[topic.suggested_resource.type] || "📚"} {topic.suggested_resource.description}
+          </span>
         </>
       )}
 
@@ -101,19 +96,15 @@ function StudyCard({ entry, onComplete, onUncomplete }: StudyCardProps) {
           checked={checked}
           onCheckedChange={handleCheck}
         />
-        <Label
-          htmlFor={`done-${entry.date}-${entry.order}`}
-          className="text-sm cursor-pointer"
-        >
+        <Label htmlFor={`done-${entry.date}-${entry.order}`} className="text-sm cursor-pointer">
           Marcar como concluído
         </Label>
       </div>
 
       {checked && (
-        <Badge variant="secondary" className="mt-3">
-          ✓ Concluído
-        </Badge>
+        <Badge variant="secondary" className="mt-3">✓ Concluído</Badge>
       )}
+
       {!checked && (
         <div className="mt-2 flex items-center gap-2">
           <Checkbox
@@ -155,96 +146,58 @@ function StudyCard({ entry, onComplete, onUncomplete }: StudyCardProps) {
 
 function ReviewCard({ entry }: { entry: ScheduleEntry }) {
   return (
-    <Card className="w-full h-full rounded-lg border-l-2 p-4 border-l-indigo-700">
+    <Card className="w-full h-full rounded-lg border-l-2 p-4 border-l-orange-500">
       <div className="review-header flex items-center gap-2">
-        <Badge variant="outline">
-          <RefreshCcw /> Revisão
-        </Badge>
+        <Badge variant="outline"><RefreshCcw /> Revisão</Badge>
         <Badge variant="secondary">
           <Calendar data-icon="inline-start" />{formatDate(entry.date)}
         </Badge>
       </div>
       <p className="review-title">{entry.topic}</p>
-      <p className="review-sub">
-        Revisão espaçada — reforce o que aprendeu sobre este tópico
-      </p>
+      <p className="review-sub">Revisão espaçada — reforce o que aprendeu sobre este tópico</p>
     </Card>
   );
 }
 
-export function ScheduleOverview({ studyPlan }: { studyPlan: ScheduleEntry[] }) {
+type ScheduleOverviewProps = {
+  studyPlan: ScheduleEntry[];
+  topics: Topic[];
+  completedCount: number;
+  onComplete: () => void;
+  onUncomplete: () => void;
+};
+
+export function ScheduleOverview({
+  studyPlan,
+  topics,
+  onComplete,
+  onUncomplete,
+}: ScheduleOverviewProps) {
   const studyEntries = studyPlan.filter(e => e.type === "study");
   const reviewEntries = studyPlan.filter(e => e.type === "review");
-  const total = studyEntries.length;
-
-  const [completedCount, setCompletedCount] = useState(0);
-  const allDone = completedCount === total && total > 0;
-  const navigate = useNavigate();
-
-
-  function handleComplete() {
-    setCompletedCount(prev => prev + 1);
-  }
-
-  function handleUncomplete(){
-    setCompletedCount(prev => Math.max(0, prev - 1));
-  }
 
   return (
-    <div className="flex flex-col gap-10 w-full">
-
-      <div className="flex items-center gap-3">
-        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div
-            className="h-2 bg-indigo-500 rounded-full transition-all duration-500"
-            style={{ width: `${total > 0 ? (completedCount / total) * 100 : 0}%` }}
-          />
-        </div>
-        <span className="text-sm text-muted-foreground whitespace-nowrap">
-          {completedCount}/{total} concluídos
-        </span>
-      </div>
-
-      {allDone && (
-        <Card className="flex flex-col gap-3 rounded-lg border p-5">
-          <div className="flex items-center gap-2">
-            <Trophy size={20} />
-            <p>
-              Parabéns! Você concluiu todos os tópicos do plano.
-            </p>
-          </div>
-          <p>
-            Que tal testar seus conhecimentos com um simulado?
-          </p>
-          <div className="flex gap-3 mt-1">
-            <button type="button" className="form-button">
-              Fazer Simulado
-            </button>
-            <button
-              type="button"
-              className="text-sm"
-              onClick={() => navigate("/api/simulados")}
-            >
-              Fazer Outro Plano
-            </button>
-          </div>
-        </Card>
-      )}
-
+    <div className="flex flex-col gap-4 w-full">
       <section>
-        <h3 className="text-sm text-muted-foreground mb-3">Dias de estudo</h3>
-        <div className="flex flex-row gap-4 overflow-x-auto pb-3">
-          {studyEntries.map((entry, i) => (
-            <div key={i} className="shrink-0">
-              <StudyCard entry={entry} onComplete={handleComplete} onUncomplete={handleUncomplete}/>
-            </div>
-          ))}
+        <div className="flex flex-col gap-4">
+          {studyEntries.map((entry, i) => {
+            const topic = topics.find(t => t.order === entry.order) ?? null;
+            return (
+              <div key={i} className="shrink-0">
+                <StudyCard
+                  entry={entry}
+                  topic={topic}
+                  onComplete={onComplete}
+                  onUncomplete={onUncomplete}
+                />
+              </div>
+            );
+          })}
         </div>
       </section>
 
       <section>
-        <h3 className="text-sm text-muted-foreground mb-3">Revisões</h3>
-        <div className="flex flex-row gap-4 overflow-x-auto pb-7">
+        <div className="flex flex-col gap-4">
           {reviewEntries.map((entry, i) => (
             <div key={i} className="shrink-0">
               <ReviewCard entry={entry} />
