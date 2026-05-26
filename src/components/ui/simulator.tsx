@@ -246,17 +246,6 @@ function Simulator() {
               {derivedTopics.length > 0 ? derivedTopics.join(", ") : "Nenhum tópico encontrado"}
             </p>
           </Field>
-
-          <Field className="md:col-span-2">
-            <FieldLabel htmlFor="quantity_questions">Quantidade de questões</FieldLabel>
-            <Input
-              id="quantity_questions"
-              type="number"
-              min={1}
-              value={quantityQuestions}
-              onChange={(event) => setQuantityQuestions(Number(event.target.value))}
-            />
-          </Field>
         </FieldGroup>
       </FieldSet>
 
