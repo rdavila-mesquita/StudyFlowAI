@@ -24,21 +24,22 @@ function formatDate(iso: string) {
 type StudyCardProps = {
   entry: ScheduleEntry;
   topic: Topic | null;
+  checked: boolean;
   onComplete: () => void;
   onUncomplete: () => void;
 };
 
-function StudyCard({ entry, topic, onComplete, onUncomplete }: StudyCardProps) {
-  const [checked, setChecked] = useState(false);
+function StudyCard({ entry, topic, checked, onComplete, onUncomplete }: StudyCardProps) {
   const [showReason, setShowReason] = useState(false);
   const [reason, setReason] = useState("");
 
   function handleCheck(value: boolean) {
-    setChecked(value);
     if (value) {
       setShowReason(false);
       onComplete();
     } else {
+      setReason("");
+      setShowReason(false);
       onUncomplete();
     }
   }
@@ -144,9 +145,21 @@ function StudyCard({ entry, topic, onComplete, onUncomplete }: StudyCardProps) {
   );
 }
 
-function ReviewCard({ entry }: { entry: ScheduleEntry }) {
+type ReviewCardProps = {
+  entry: ScheduleEntry;
+  checked: boolean;
+  onComplete: () => void;
+  onUncomplete: () => void;
+};
+
+function ReviewCard({ entry, checked, onComplete, onUncomplete }: ReviewCardProps) {
+  function handleCheck(value: boolean) {
+    if (value) onComplete();
+    else onUncomplete();
+  }
+
   return (
-    <Card className="w-full h-full rounded-lg border-l-2 p-4 border-l-orange-500">
+    <Card className="w-full h-full rounded-lg border-l-2 p-4 border-l-orange-500 gap-3">
       <div className="review-header flex items-center gap-2">
         <Badge variant="outline"><RefreshCcw /> Revisão</Badge>
         <Badge variant="secondary">
@@ -155,6 +168,24 @@ function ReviewCard({ entry }: { entry: ScheduleEntry }) {
       </div>
       <p className="review-title">{entry.topic}</p>
       <p className="review-sub">Revisão espaçada — reforce o que aprendeu sobre este tópico</p>
+
+      <div className="mt-2 flex items-center gap-2">
+        <Checkbox
+          id={`review-done-${entry.date}-${entry.order}`}
+          checked={checked}
+          onCheckedChange={handleCheck}
+        />
+        <Label
+          htmlFor={`review-done-${entry.date}-${entry.order}`}
+          className="text-sm cursor-pointer"
+        >
+          Marcar revisão como concluída
+        </Label>
+      </div>
+
+      {checked && (
+        <Badge variant="secondary" className="mt-1">✓ Revisão concluída</Badge>
+      )}
     </Card>
   );
 }
@@ -162,33 +193,41 @@ function ReviewCard({ entry }: { entry: ScheduleEntry }) {
 type ScheduleOverviewProps = {
   studyPlan: ScheduleEntry[];
   topics: Topic[];
-  completedCount: number;
-  onComplete: () => void;
-  onUncomplete: () => void;
+  completedKeys: Set<string>;
+  onComplete: (key: string) => void;
+  onUncomplete: (key: string) => void;
 };
 
 export function ScheduleOverview({
   studyPlan,
   topics,
+  completedKeys,
   onComplete,
   onUncomplete,
 }: ScheduleOverviewProps) {
   const studyEntries = studyPlan.filter(e => e.type === "study");
   const reviewEntries = studyPlan.filter(e => e.type === "review");
 
+  function getEntryKey(date: string, order: number): string {
+    return `${date}-${order}`;
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <section>
         <div className="flex flex-col gap-4">
-          {studyEntries.map((entry, i) => {
+          {studyEntries.map((entry) => {
+            const entryKey = getEntryKey(entry.date, entry.order);
             const topic = topics.find(t => t.order === entry.order) ?? null;
+            const isCompleted = completedKeys.has(entryKey);
             return (
-              <div key={i} className="shrink-0">
+              <div key={entryKey} className="shrink-0">
                 <StudyCard
                   entry={entry}
                   topic={topic}
-                  onComplete={onComplete}
-                  onUncomplete={onUncomplete}
+                  checked={isCompleted}
+                  onComplete={() => onComplete(entryKey)}
+                  onUncomplete={() => onUncomplete(entryKey)}
                 />
               </div>
             );
@@ -198,11 +237,14 @@ export function ScheduleOverview({
 
       <section>
         <div className="flex flex-col gap-4">
-          {reviewEntries.map((entry, i) => (
-            <div key={i} className="shrink-0">
-              <ReviewCard entry={entry} />
+          {reviewEntries.map((entry) => {
+            const key = `${entry.date}-${entry.order}`;
+            return(
+              <div key={key} className="shrink-0">
+              <ReviewCard entry={entry} checked={completedKeys.has(key)} onComplete={() => onComplete(key)} onUncomplete={() => onUncomplete(key)} />
             </div>
-          ))}
+            )
+            })}
         </div>
       </section>
     </div>

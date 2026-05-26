@@ -36,12 +36,22 @@ export function PlanPage() {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const schedule: ScheduleEntry[] = plan?.study_plan ?? [];
 
-  const totalStudy = schedule.filter(e => e.type === "study").length;
+  const totalStudy = schedule.length;
+  const [completedKeys, setCompletedKeys] = useState<Set<string>>(new Set());
 
-  const [completedCount, setCompletedCount] = useState(0);
+  function handleComplete(key: string) { 
+    setCompletedKeys(prev => new Set(prev).add(key));
+  }
+  
+  function handleUncomplete(key: string) {
+  setCompletedKeys(prev => {
+    const next = new Set(prev);
+    next.delete(key);
+    return next;
+  });
+}
 
-  function handleComplete() { setCompletedCount(prev => prev + 1); }
-  function handleUncomplete() { setCompletedCount(prev => Math.max(0, prev - 1)); }
+  const completedCount = completedKeys.size;
   const allDone = completedCount === totalStudy && totalStudy > 0;
 
   const filtredEntries = selectedDay
@@ -63,7 +73,7 @@ export function PlanPage() {
           <h2 className="pt-5">Seu plano está dividido nos seguintes módulos:</h2>
           <div className="flex pt-5 pb-5 gap-4 overflow-x-auto">
           {plan.topics.map((topic) => (
-            <Card key={topic.order} className="max-w-80 max-h-96 rounded-lg border p-4 shadow-sm gap-4 bg-stone-900/65">
+            <Card key={topic.order} className="cursor-pointer hover:scale-105 transition-transform duration-300 max-w-80 max-h-96 rounded-lg border p-4 shadow-sm gap-4 bg-stone-900/65">
               <CardTitle>Modulo {topic.order}: {topic.title}</CardTitle>
               <CardDescription>
                 {topic.description}
@@ -105,7 +115,7 @@ export function PlanPage() {
                 <ScheduleOverview
                   studyPlan={filtredEntries}
                   topics={plan.topics ?? []}
-                  completedCount={completedCount}
+                  completedKeys={completedKeys}
                   onComplete={handleComplete}
                   onUncomplete={handleUncomplete}
                 />
