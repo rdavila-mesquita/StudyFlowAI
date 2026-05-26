@@ -9,14 +9,14 @@ import { Card, CardContent } from "./card"
 export type StudyDay = {
   date: string
   formatedDate?: string
-  type: "study" | "exam"
+  type: "study" | "review"
   title: string
   content: string[]
 }
 
 type Props = {
   studyPlan: StudyDay[]
-  onSelectDay: (day: StudyDay | null) => void
+  onSelectDay: (day: StudyDay | null, rawDate?: string | null) => void;
 }
 
 export function CalendarCustomDays({
@@ -35,22 +35,14 @@ export function CalendarCustomDays({
           captionLayout="dropdown"
           selected={selectedDate}
           onSelect={(date) => {
-            setSelectedDate(date)
-
+            setSelectedDate(date);
             if (!date) {
-              onSelectDay(null)
-              return
+              onSelectDay(null, null);
+              return;
             }
-
-            const isoDate = date
-              .toISOString()
-              .split("T")[0]
-
-            const studyDay = studyPlan.find(
-              (item) => item.date === isoDate
-            )
-
-            onSelectDay(studyDay ?? null)
+            const isoDate = date.toISOString().split("T")[0];
+            const studyDay = studyPlan.find((item) => item.date === isoDate);
+            onSelectDay(studyDay ?? null, isoDate); // <-- passa isoDate sempre
           }}
           className="[--cell-size:--spacing(14)] md:[--cell-size:--spacing(16)]"
           formatters={{
@@ -108,14 +100,14 @@ export function CalendarCustomDays({
                         text-[10px]
                         font-medium
                         ${
-                          studyDay.type === "exam"
-                            ? "bg-red-500/15 text-red-500"
+                          studyDay.type === "review"
+                            ? "bg-orange-500/15 text-orange-500"
                             : "bg-violet-500/15 text-violet-500"
                         }
                       `}
                     >
-                      {studyDay.type === "exam"
-                        ? "Simulado"
+                      {studyDay.type === "review"
+                        ? "Revisão"
                         : "Estudar"}
                     </span>
                   )}

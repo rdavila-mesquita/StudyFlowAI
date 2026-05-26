@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import type { GeneratePlanResponse } from "../../types/study";
 import { api } from "../../service/api";
 import { useNavigate } from "react-router-dom";
+import { ReportButton } from "../../components/Button/reportButton";
+import { mockStudyStatePayload } from "../../mocks/studyStatePayloadMock";
 import "./Home.css";
 
 
@@ -24,6 +26,7 @@ function Home() {
   const [hoursPerDay, setHoursPerDay] = useState("");
   const [examDate, setExamDate] = useState("");        
   const [loading, setLoading] = useState(false);
+  const [useMockPayload, setUseMockPayload] = useState(false);
 
   const navigate = useNavigate();
 
@@ -53,6 +56,25 @@ function Home() {
       setLoading(false);
     }
   }
+
+  function handleReportSuccess(result: any) {
+    const reportStateData = result?.state ?? result;
+    const reportIdResult =
+      reportStateData?.report_id ?? reportStateData?.id ?? result?.report_id ?? "";
+
+    const targetId = reportIdResult ? String(reportIdResult) : "preview";
+    navigate(`/api/relatorios/${targetId}`, { state: { report: result } });
+  }
+
+  const reportPayload = useMockPayload
+    ? mockStudyStatePayload
+    : {
+        discipline,
+        subject,
+        level,
+        exam_date: examDate,
+        hours_per_day: hoursPerDay ? Number(hoursPerDay) : undefined,
+      };
 
   return (
     <div className="container">
@@ -142,6 +164,31 @@ function Home() {
         >
           {loading ? "Gerando..." : "Gerar Plano"}
         </button>
+
+        <button
+          type="button"
+          className="form-button"
+          onClick={() => setUseMockPayload((prev) => !prev)}
+          disabled={loading}
+        >
+          {useMockPayload ? "Usando mock de teste" : "Ativar mock de teste"}
+        </button>
+
+        {useMockPayload && (
+          <div className="mock-note">
+            Mock ativo: o payload de teste será usado pelo botão Executar Relatório.
+          </div>
+        )}
+
+        <div className="report-actions">
+          <div className="report-buttons">
+            <ReportButton
+              payload={reportPayload}
+              onSuccess={handleReportSuccess}
+              disabled={loading}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
