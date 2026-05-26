@@ -24,6 +24,7 @@ export function PlanPage() {
   if (isLoading) return <p>Carregando plano...</p>;
   if (isError)   return <p>Erro ao carregar o plano.</p>;
   if (!plan) { navigate("/"); return null; }
+  const currentPlan = plan;
 
   return (
     <div className="container">
@@ -40,7 +41,9 @@ export function PlanPage() {
 
         <div className="gap-6 mt-8">
           <h2>Faça um simulado e teste seus conhecimentos</h2>
-          <Button variant="ghost" onClick={() => navigate("/api/simulados")}>Fazer simulado <SquareArrowOutUpRight /> </Button>
+          <Button variant="ghost" onClick={() => navigate(`/api/simulados/${currentPlan.id}`)}>
+            Fazer simulado <SquareArrowOutUpRight />
+          </Button>
         </div>
       </div>
     </div>
