@@ -167,7 +167,7 @@ function Home() {
 
         <button
           type="button"
-          className="form-button"
+          className="form-button ml-3"
           onClick={() => setUseMockPayload((prev) => !prev)}
           disabled={loading}
         >
