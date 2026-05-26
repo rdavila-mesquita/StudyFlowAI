@@ -3,6 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PlanPage } from "./pages/Plan/PlanPage";
 import SimulatorPage from "./simulator/simulatorPage";
+import ReportPage from "./pages/Report/ReportPage";
 import App from "./App";
 import './index.css'
 
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="/api/planos/:id" element={<PlanPage />} />
           <Route path="/api/simulados" element={<SimulatorPage />} />
           <Route path="/api/simulados/:id" element={<SimulatorPage />} />
+          <Route path="/api/relatorios/:id" element={<ReportPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster richColors />
